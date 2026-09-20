@@ -11,6 +11,7 @@ kotlin = "2.2.10"
 composeBom = "2026.02.01"
 
 [libraries]
+androidx-compose-material-icons-core = { group = "androidx.compose.material", name = "material-icons-core" }
 androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
