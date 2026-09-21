@@ -27,4 +27,12 @@ interface CardDao {
 
     @Query("SELECT * FROM cards WHERE id = :id")
     suspend fun getById(id: Long): CardEntity?
+
+    // The da tung on va den han (tre nhat truoc)
+    @Query("SELECT * FROM cards WHERE intervalDays > 0 AND dueDay <= :today ORDER BY dueDay ASC, id ASC")
+    suspend fun getDueCards(today: Long): List<CardEntity>
+
+    // The moi (chua on lan nao), cu nhat truoc, gioi han so luong
+    @Query("SELECT * FROM cards WHERE intervalDays = 0 ORDER BY createdAt ASC, id ASC LIMIT :limit")
+    suspend fun getNewCards(limit: Int): List<CardEntity>
 }
