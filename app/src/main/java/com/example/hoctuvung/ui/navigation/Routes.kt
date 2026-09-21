@@ -6,4 +6,5 @@ object Routes {
     const val STATS = "stats"
     const val SETTINGS = "settings"
     const val ADD = "add"
+    const val ADD_BULK = "add_bulk"
 }

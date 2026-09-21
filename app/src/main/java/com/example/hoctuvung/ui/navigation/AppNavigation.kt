@@ -20,6 +20,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.hoctuvung.ui.add.AddBulkScreen
 import com.example.hoctuvung.ui.add.AddWordScreen
 import com.example.hoctuvung.ui.home.HomeScreen
 import com.example.hoctuvung.ui.library.LibraryScreen
@@ -70,7 +71,10 @@ fun AppNavigation() {
             composable(Routes.LIBRARY) {
                 LibraryScreen(onAddClick = { navController.navigate(Routes.ADD) })
             }
-            composable(Routes.ADD) { AddWordScreen() }
+            composable(Routes.ADD) {
+                AddWordScreen(onBulkClick = { navController.navigate(Routes.ADD_BULK) })
+            }
+            composable(Routes.ADD_BULK) { AddBulkScreen() }
             composable(Routes.STATS) { StatsScreen() }
             composable(Routes.SETTINGS) { SettingsScreen() }
         }

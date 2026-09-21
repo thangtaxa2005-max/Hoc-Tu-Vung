@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -22,6 +23,7 @@ import com.example.hoctuvung.data.repository.AddResult
 
 @Composable
 fun AddWordScreen(
+    onBulkClick: () -> Unit,
     viewModel: AddWordViewModel = viewModel(factory = AddWordViewModel.factory(LocalContext.current))
 ) {
     var word by rememberSaveable { mutableStateOf("") }
@@ -72,6 +74,10 @@ fun AddWordScreen(
         if (message.isNotEmpty()) {
             Spacer(Modifier.height(12.dp))
             Text(message)
+        }
+        Spacer(Modifier.height(16.dp))
+        TextButton(onClick = onBulkClick) {
+            Text("Add many words at once")
         }
     }
 }

@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -18,6 +19,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 
@@ -34,12 +36,30 @@ fun AddBulkScreen(
             .padding(16.dp)
             .verticalScroll(rememberScrollState())
     ) {
-        Text("One word per line:  word | meaning | example (optional)")
+        Text("How to enter words", style = MaterialTheme.typography.titleMedium)
+        Spacer(Modifier.height(8.dp))
+        Text("One word per line. Separate the parts with the | character:")
+        Spacer(Modifier.height(4.dp))
+        Text("word | meaning | example sentence (optional)", fontFamily = FontFamily.Monospace)
         Spacer(Modifier.height(12.dp))
+        Text("Example:")
+        Spacer(Modifier.height(4.dp))
+        Text(
+            "cat | meo\ndog | cho\nbird | chim | The bird is singing.",
+            fontFamily = FontFamily.Monospace
+        )
+        Spacer(Modifier.height(12.dp))
+        Text(
+            "A line missing the word or the meaning is skipped and stays in the box " +
+                "so you can fix it. Words that already exist are skipped.",
+            style = MaterialTheme.typography.bodySmall
+        )
+        Spacer(Modifier.height(16.dp))
         OutlinedTextField(
             value = text,
             onValueChange = { text = it },
             label = { Text("Word list") },
+            placeholder = { Text("cat | meo\ndog | cho\nbird | chim") },
             minLines = 8,
             modifier = Modifier.fillMaxWidth()
         )
