@@ -8,6 +8,7 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.hoctuvung.data.local.AppDatabase
 import com.example.hoctuvung.data.repository.AddResult
+import com.example.hoctuvung.data.repository.BulkAddResult
 import com.example.hoctuvung.data.repository.CardRepository
 import kotlinx.coroutines.launch
 
@@ -16,6 +17,12 @@ class AddWordViewModel(private val repository: CardRepository) : ViewModel() {
     fun save(word: String, meaning: String, example: String, onResult: (AddResult) -> Unit) {
         viewModelScope.launch {
             onResult(repository.add(word, meaning, example))
+        }
+    }
+
+    fun saveBulk(text: String, onResult: (BulkAddResult) -> Unit) {
+        viewModelScope.launch {
+            onResult(repository.addBulk(text))
         }
     }
 

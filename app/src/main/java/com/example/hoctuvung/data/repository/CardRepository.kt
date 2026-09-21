@@ -2,6 +2,7 @@ package com.example.hoctuvung.data.repository
 
 import com.example.hoctuvung.data.local.CardDao
 import com.example.hoctuvung.data.local.CardEntity
+import com.example.hoctuvung.domain.BulkParser
 import kotlinx.coroutines.flow.Flow
 
 sealed interface AddResult {
@@ -9,6 +10,12 @@ sealed interface AddResult {
     data object Duplicate : AddResult
     data object Invalid : AddResult
 }
+
+data class BulkAddResult(
+    val added: Int,
+    val duplicates: Int,
+    val invalidLines: List<Int>
+)
 
 class CardRepository(private val dao: CardDao) {
 
@@ -23,6 +30,23 @@ class CardRepository(private val dao: CardDao) {
 
         val id = dao.insert(CardEntity(word = w, meaningVi = m, exampleSentence = ex))
         return if (id == -1L) AddResult.Duplicate else AddResult.Added
+    }
+
+    suspend fun addBulk(text: String): BulkAddResult {
+        val parsed = BulkParser.parse(text)
+        var added = 0
+        var duplicates = 0
+        for (card in parsed.cards) {
+            val id = dao.insert(
+                CardEntity(
+                    word = card.word,
+                    meaningVi = card.meaningVi,
+                    exampleSentence = card.exampleSentence
+                )
+            )
+            if (id == -1L) duplicates++ else added++
+        }
+        return BulkAddResult(added, duplicates, parsed.invalidLines)
     }
 
     suspend fun delete(card: CardEntity) = dao.delete(card)
