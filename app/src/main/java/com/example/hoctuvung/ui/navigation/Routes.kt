@@ -5,4 +5,5 @@ object Routes {
     const val LIBRARY = "library"
     const val STATS = "stats"
     const val SETTINGS = "settings"
+    const val ADD = "add"
 }
