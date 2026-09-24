@@ -1,4 +1,4 @@
-package com.example.hoctuvung.ui.navigation
+﻿package com.example.hoctuvung.ui.navigation
 
 object Routes {
     const val HOME = "home"
@@ -7,4 +7,7 @@ object Routes {
     const val SETTINGS = "settings"
     const val ADD = "add"
     const val ADD_BULK = "add_bulk"
+    const val REVIEW = "review/{mode}"
+
+    fun review(mode: String) = "review/$mode"
 }

@@ -1,4 +1,4 @@
-package com.example.hoctuvung.data.repository
+﻿package com.example.hoctuvung.data.repository
 
 import com.example.hoctuvung.data.local.CardDao
 import com.example.hoctuvung.data.local.CardEntity
@@ -50,4 +50,10 @@ class CardRepository(private val dao: CardDao) {
     }
 
     suspend fun delete(card: CardEntity) = dao.delete(card)
+
+    suspend fun getDueCards(today: Long): List<CardEntity> = dao.getDueCards(today)
+
+    suspend fun getNewCards(limit: Int): List<CardEntity> = dao.getNewCards(limit)
+
+    suspend fun update(card: CardEntity) = dao.update(card)
 }

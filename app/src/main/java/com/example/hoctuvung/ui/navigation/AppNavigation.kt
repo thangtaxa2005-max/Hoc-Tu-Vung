@@ -1,4 +1,4 @@
-package com.example.hoctuvung.ui.navigation
+﻿package com.example.hoctuvung.ui.navigation
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -15,15 +15,21 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.hoctuvung.ui.add.AddBulkScreen
 import com.example.hoctuvung.ui.add.AddWordScreen
 import com.example.hoctuvung.ui.home.HomeScreen
 import com.example.hoctuvung.ui.library.LibraryScreen
+import com.example.hoctuvung.ui.review.ReviewScreen
+import com.example.hoctuvung.ui.review.ReviewViewModel
 import com.example.hoctuvung.ui.settings.SettingsScreen
 import com.example.hoctuvung.ui.stats.StatsScreen
 
@@ -64,7 +70,7 @@ fun AppNavigation() {
     ) { innerPadding ->
         NavHost(
             navController = navController,
-            startDestination = Routes.HOME,
+            startDestination = Routes.review("recall"),
             modifier = Modifier.padding(innerPadding)
         ) {
             composable(Routes.HOME) { HomeScreen() }
@@ -77,6 +83,27 @@ fun AppNavigation() {
             composable(Routes.ADD_BULK) { AddBulkScreen() }
             composable(Routes.STATS) { StatsScreen() }
             composable(Routes.SETTINGS) { SettingsScreen() }
+            composable(
+                route = Routes.REVIEW,
+                arguments = listOf(navArgument("mode") { type = NavType.StringType })
+            ) { backStackEntryReview ->
+                val mode = backStackEntryReview.arguments?.getString("mode") ?: "recall"
+                when (mode) {
+                    "recall" -> {
+                        val context = LocalContext.current
+                        val reviewViewModel: ReviewViewModel = viewModel(
+                            factory = ReviewViewModel.factory(context)
+                        )
+                        ReviewScreen(
+                            viewModel = reviewViewModel,
+                            onFinished = { navController.popBackStack() }
+                        )
+                    }
+                    else -> {
+                        Text("Chế độ '$mode' chưa làm (Task 7/8)")
+                    }
+                }
+            }
         }
     }
 }
