@@ -1,4 +1,4 @@
-package com.example.hoctuvung.data.local
+﻿package com.example.hoctuvung.data.local
 
 import androidx.room.Dao
 import androidx.room.Delete
@@ -11,7 +11,6 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface CardDao {
 
-    // Tra ve id cua the moi, hoac -1 neu tu da ton tai (bi trung)
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(card: CardEntity): Long
 
@@ -21,18 +20,30 @@ interface CardDao {
     @Delete
     suspend fun delete(card: CardEntity)
 
-    // Danh sach tu moi nhat truoc; tu dong cap nhat khi du lieu doi
     @Query("SELECT * FROM cards ORDER BY createdAt DESC")
     fun observeAll(): Flow<List<CardEntity>>
 
     @Query("SELECT * FROM cards WHERE id = :id")
     suspend fun getById(id: Long): CardEntity?
 
-    // The da tung on va den han (tre nhat truoc)
     @Query("SELECT * FROM cards WHERE intervalDays > 0 AND dueDay <= :today ORDER BY dueDay ASC, id ASC")
     suspend fun getDueCards(today: Long): List<CardEntity>
 
-    // The moi (chua on lan nao), cu nhat truoc, gioi han so luong
     @Query("SELECT * FROM cards WHERE intervalDays = 0 ORDER BY createdAt ASC, id ASC LIMIT :limit")
     suspend fun getNewCards(limit: Int): List<CardEntity>
+
+    @Query("SELECT COUNT(*) FROM cards WHERE intervalDays > 0 AND dueDay <= :today")
+    fun observeDueCount(today: Long): Flow<Int>
+
+    @Query("SELECT COUNT(*) FROM cards WHERE intervalDays = 0")
+    fun observeNewCount(): Flow<Int>
+
+    @Query("SELECT COUNT(*) FROM cards WHERE intervalDays >= 21")
+    fun observeMasteredCount(): Flow<Int>
+
+    @Query("SELECT COUNT(*) FROM cards WHERE intervalDays > 0 AND intervalDays < 21")
+    fun observeLearningCount(): Flow<Int>
+
+    @Query("SELECT * FROM cards WHERE lapses > 0 ORDER BY lapses DESC LIMIT 5")
+    fun getMostFailedCards(): Flow<List<CardEntity>>
 }

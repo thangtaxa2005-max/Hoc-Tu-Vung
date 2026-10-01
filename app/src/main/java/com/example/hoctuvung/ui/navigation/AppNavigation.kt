@@ -70,10 +70,19 @@ fun AppNavigation() {
     ) { innerPadding ->
         NavHost(
             navController = navController,
-            startDestination = Routes.review("recall"),
+            startDestination = Routes.HOME,
             modifier = Modifier.padding(innerPadding)
         ) {
-            composable(Routes.HOME) { HomeScreen() }
+            composable(Routes.HOME) {
+                val context = LocalContext.current
+                val homeViewModel: com.example.hoctuvung.ui.home.HomeViewModel = viewModel(factory = com.example.hoctuvung.ui.home.HomeViewModel.factory(context))
+                HomeScreen(
+                    viewModel = homeViewModel,
+                    onStartRecall = { navController.navigate(Routes.review("recall")) },
+                    onStartCloze = { navController.navigate(Routes.review("cloze")) },
+                    onStartListening = { navController.navigate(Routes.review("listening")) }
+                )
+            }
             composable(Routes.LIBRARY) {
                 LibraryScreen(onAddClick = { navController.navigate(Routes.ADD) })
             }
@@ -81,18 +90,26 @@ fun AppNavigation() {
                 AddWordScreen(onBulkClick = { navController.navigate(Routes.ADD_BULK) })
             }
             composable(Routes.ADD_BULK) { AddBulkScreen() }
-            composable(Routes.STATS) { StatsScreen() }
-            composable(Routes.SETTINGS) { SettingsScreen() }
+            composable(Routes.STATS) {
+                val context = LocalContext.current
+                val statsViewModel: com.example.hoctuvung.ui.stats.StatsViewModel = viewModel(factory = com.example.hoctuvung.ui.stats.StatsViewModel.factory(context))
+                StatsScreen(viewModel = statsViewModel)
+            }
+            composable(Routes.SETTINGS) {
+                val context = LocalContext.current
+                val settingsViewModel: com.example.hoctuvung.ui.settings.SettingsViewModel = viewModel(factory = com.example.hoctuvung.ui.settings.SettingsViewModel.factory(context))
+                SettingsScreen(viewModel = settingsViewModel)
+            }
             composable(
                 route = Routes.REVIEW,
                 arguments = listOf(navArgument("mode") { type = NavType.StringType })
             ) { backStackEntryReview ->
                 val mode = backStackEntryReview.arguments?.getString("mode") ?: "recall"
                 when (mode) {
-                    "recall" -> {
+                    "recall", "cloze", "listening" -> {
                         val context = LocalContext.current
                         val reviewViewModel: ReviewViewModel = viewModel(
-                            factory = ReviewViewModel.factory(context)
+                            factory = ReviewViewModel.factory(context, mode)
                         )
                         ReviewScreen(
                             viewModel = reviewViewModel,

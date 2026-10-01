@@ -17,7 +17,10 @@ data class BulkAddResult(
     val invalidLines: List<Int>
 )
 
-class CardRepository(private val dao: CardDao) {
+class CardRepository(
+    private val dao: CardDao,
+    private val logDao: com.example.hoctuvung.data.local.ReviewLogDao? = null
+) {
 
     fun observeAll(): Flow<List<CardEntity>> = dao.observeAll()
 
@@ -56,4 +59,21 @@ class CardRepository(private val dao: CardDao) {
     suspend fun getNewCards(limit: Int): List<CardEntity> = dao.getNewCards(limit)
 
     suspend fun update(card: CardEntity) = dao.update(card)
+
+    suspend fun insertLog(log: com.example.hoctuvung.data.local.ReviewLogEntity) {
+        logDao?.insertLog(log)
+    }
+
+    fun observeDueCount(today: Long): Flow<Int> = dao.observeDueCount(today)
+
+    fun observeNewCount(): Flow<Int> = dao.observeNewCount()
+
+    fun observeMasteredCount(): Flow<Int> = dao.observeMasteredCount()
+
+    fun observeLearningCount(): Flow<Int> = dao.observeLearningCount()
+
+    fun getMostFailedCards(): Flow<List<CardEntity>> = dao.getMostFailedCards()
+
+    fun getDailyReviewCounts(): Flow<List<com.example.hoctuvung.data.local.DailyReviewCount>> = 
+        logDao?.getDailyReviewCounts() ?: kotlinx.coroutines.flow.emptyFlow()
 }
